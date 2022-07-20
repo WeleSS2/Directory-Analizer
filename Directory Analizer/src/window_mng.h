@@ -64,6 +64,16 @@ public:
         return std::make_tuple(SCREEN_WIDTH, SCREEN_HEIGHT);
     };
 
+    int GetWidth()
+    {
+        return SCREEN_WIDTH;
+    }
+
+    int GetHeight()
+    {
+        return SCREEN_HEIGHT;
+    }
+
     // Initialize SDL
     bool Sdl_Init();
 

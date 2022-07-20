@@ -12,7 +12,5 @@ int main(int argc, char* argv[])
 	rerender render(&mainWin);
 	render.AppLoop();
 
-
-
 	return 0;
 }
