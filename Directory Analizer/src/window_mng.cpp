@@ -1,6 +1,6 @@
 #include "window_mng.h"
 
-// Basic constructor to create a rendring window with custom name
+//Creating rendring window with custom name
 void Window_Init::Sdl_Build()
 {
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -48,6 +48,7 @@ void Window_Init::Sdl_Build()
     }
 }
 
+// Setting up window size depending on current screen resolution
 void Window_Init::Take_window_size()
 {
     // Take screen
@@ -57,6 +58,7 @@ void Window_Init::Take_window_size()
     SCREEN_WIDTH = DM.w;
 }
 
+// Initialization of SDL
 bool Window_Init::Sdl_Init()
 {
     //Init SDL

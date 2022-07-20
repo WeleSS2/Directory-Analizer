@@ -6,10 +6,13 @@ cmake_minimum_required (VERSION 3.12...3.23)
 
 project ("Directory Analizer" VERSION 0.1 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 20)
+
 # Target named just as a CMakeTarget, it's not a public app so i use default name.
 add_executable (CMakeTarget "${PROJECT_SOURCE_DIR}/Directory Analizer/Directory Analizer.cpp"
                             "${PROJECT_SOURCE_DIR}/Directory Analizer/src/window_mng.cpp"
-                            )
+                            "${PROJECT_SOURCE_DIR}/Directory Analizer/src/graphics_engine.cpp"
+                             "Directory Analizer/src/graphics_engine_rerender.cpp")
 
 
 # Include sub-projects and directories
@@ -53,3 +56,12 @@ foreach( file_i ${LIST_NEEDED_DLL})
     ARGS -E copy ${file_i} $<TARGET_FILE_DIR:CMakeTarget>
 )
 endforeach( file_i )
+
+file(GLOB GRAPHICS
+    "${PROJECT_SOURCE_DIR}/Directory Analizer/Graphics/Pngs/*.png"
+)
+file(GLOB FONTS 
+    "${PROJECT_SOURCE_DIR}/Directory Analizer/Graphics/Fonts/*.ttf"
+)
+file(COPY ${GRAPHICS} DESTINATION Graphics/Pngs)
+file(COPY ${FONTS} DESTINATION Graphics/Fonts)
