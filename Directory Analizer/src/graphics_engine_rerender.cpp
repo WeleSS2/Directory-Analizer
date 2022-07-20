@@ -62,7 +62,7 @@ void rerender::AppLoop()
 
 					if(checkPosition(x, y, &Folder))
 					{
-						OpenFolder();
+						std::string path = OpenFolder();
 					}
 					else if (checkPosition(x, y, &Stats))
 					{
@@ -109,9 +109,50 @@ void rerender::AppLoop()
 	}
 }
 
-void rerender::OpenFolder()
+std::string rerender::pwstr_to_str(PWSTR win_str)
 {
-	std::cout << "Work" << "\n";
+	wchar_t* tmp = win_str;
+	std::wstring ws(tmp);
+	std::string str;
+	size_t size;
+	str.resize(ws.length());
+	wcstombs_s(&size, &str[0], str.size() + 1, ws.c_str(), ws.size());
+	return str;
+}
+
+std::string rerender::OpenFolder()
+{
+	IFileOpenDialog* pFileOpen;
+	PWSTR pszFilePath = NULL;
+
+	// Create the FileOpenDialog object.
+	HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+		IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+	if (SUCCEEDED(hr))
+	{
+		// Set to folder selection
+		DWORD dwOptions;
+		if (SUCCEEDED(pFileOpen->GetOptions(&dwOptions)))
+		{
+			pFileOpen->SetOptions(dwOptions | FOS_PICKFOLDERS);
+		}
+		pFileOpen->Show(NULL);
+
+		// Get path
+		if (SUCCEEDED(hr))
+		{
+			IShellItem* pItem;
+			hr = pFileOpen->GetResult(&pItem);
+			if (SUCCEEDED(hr))
+			{
+				PWSTR pszFilePath;
+				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+				
+				return pwstr_to_str(pszFilePath);
+			}
+		}
+		pFileOpen->Release();
+	}
 }
 
 bool rerender::checkPosition(int& x, int& y, button* obj)

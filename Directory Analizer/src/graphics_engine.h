@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <string>
+#include <cstdlib>
 #include "window_mng.h"
 
 // Graphics libs
@@ -9,6 +11,9 @@
 #include "SDL/SDL_ttf.h"	
 
 #elif _WIN32
+#include <windows.h>
+#include <ShObjIdl.h>
+#include <ShlObj.h>
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
@@ -113,7 +118,8 @@ public:
     void createStatsMenu();
     void renderStatsMenu();
 
-    void OpenFolder();
+    std::string pwstr_to_str(PWSTR str);
+    std::string OpenFolder();
 
     void Stats();
 
@@ -193,7 +199,6 @@ public:
         SDL_RenderCopyEx(window_inst->GetRenderer(), texture->getTexture(), clip, &renderQuad, angle, center, flip);
         if (text.size() != 0)
         {
-            std::cout << "Create font for " << this->name << "\n";
             Texture fontTexture(window_inst);
             fontTexture.loadFont("Graphics/Fonts/Bodoni.ttf", 28);
             fontTexture.loadFromRenderedText(text, { 15, 20, 28, 0xFF });

@@ -1,6 +1,5 @@
 ﻿// Directory Analizer.cpp : Defines the entry point for the application.
 //
-
 #include "Directory Analizer.h"
 
 using namespace std;
