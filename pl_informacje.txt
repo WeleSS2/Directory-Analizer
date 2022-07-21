@@ -1,6 +1,4 @@
-Mam gdzieœ Ÿle ustawione destruktory, niestety nie by³em w stanie ich namierzyæ.
-
 Ta aplikacja podsumowywuje spor¹ czêœæ mojej obecnej wiedzy. Budowê projektu na podstawie dziedziczenia odrzuci³em poniewa¿ zawsze mia³em problemy z tzw "problemem diamentu". 
 U¿ywaæ natomiast namespace i struktur w nim globalnie ¿eby wygodnie wszystko postawiæ raczej nie jest celem.
-Nie wiem jakie wra¿enie zrobi ta aplikacja czy negatywne czy pozytywne, je¿eli zostanie odrzucona to za pó³ roku napiszê coœ zdecydowanie lepszego. Mimo wszystko ca³y
+Nie wiem jakie wra¿enie zrobi ta aplikacja czy negatywne czy pozytywne, je¿eli zostanie odrzucona to za pó³ roku napiszê coœ zdecydowanie lepszego. W koñcu ca³y
 czas siê uczê.

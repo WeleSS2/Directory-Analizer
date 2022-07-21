@@ -25,7 +25,7 @@ class button;
 
 class Texture {
 private:
-    Window_Init* window_inst;
+    std::shared_ptr<Window_Init> window_inst;
 protected:
     SDL_Texture* mTexture = NULL;
     TTF_Font* font = NULL;
@@ -38,9 +38,9 @@ public:
         mTexture = NULL;
         mWidth = 0;
         mHeight = 0;
-    }
+    };
 
-    Texture(Window_Init* inst)
+    Texture(std::shared_ptr<Window_Init> inst)
         : window_inst(inst)
     {
         mTexture = NULL;
@@ -95,10 +95,10 @@ public:
 class rerender
 {
 private:
-    Window_Init* window_inst;
+    std::shared_ptr<Window_Init> window_inst;
 public:
     // Rerendering require window control object.
-    rerender(Window_Init* inst)
+    rerender(std::shared_ptr<Window_Init> inst)
         : window_inst(inst)
     {
     };
@@ -133,15 +133,17 @@ public:
 class button
 {
 private:
-    Window_Init* window_inst;
+    std::shared_ptr<Window_Init> window_inst;
     SDL_Rect mPosition; // Button position, width and height
     SDL_Point prevPos = { -10000, -10000 };
     SDL_Point fontPosition; // Text position
+    SDL_Point prevFontPos = { -10000, -10000 };
     std::string name, text; // Button text
+    Texture fontTexture;
 
 public:
     // Constructor for simple buttons
-    button(Window_Init* inst, std::string c_name, SDL_Rect c_mPosition)
+    button(std::shared_ptr<Window_Init> inst, std::string c_name, SDL_Rect c_mPosition)
         : window_inst(inst),
         name(c_name),
         mPosition(c_mPosition)
@@ -150,13 +152,17 @@ public:
 
 
     // Constructor for buttons with text
-    button(Window_Init* inst, std::string c_name, SDL_Rect c_mPosition, std::string c_text, SDL_Point c_text_cord = { -1000, -1000 })
+    button(std::shared_ptr<Window_Init> inst, std::string c_name, SDL_Rect c_mPosition, std::string c_text, SDL_Point c_text_cord = { -1000, -1000 })
         : window_inst(inst), 
         name(c_name),
         mPosition(c_mPosition),
         text(c_text),
         fontPosition(c_text_cord)
     {
+        Texture temp(window_inst);
+        fontTexture = temp;
+        fontTexture.loadFont("Graphics/Fonts/Bodoni.ttf", 28);
+        fontTexture.loadFromRenderedText(text, { 15, 20, 28, 0xFF });
     }
 
     ~button()
@@ -165,7 +171,6 @@ public:
 
     void setZero()
     {
-        prevPos = { mPosition.x, mPosition.y };
         mPosition.x = -10000;
         mPosition.y = -10000;
     }
@@ -174,14 +179,20 @@ public:
     {
         if (mPosition.x == -10000)
         {
-            mPosition.x = prevPos.x;
-            mPosition.y = prevPos.y;
-            this->render_button(texture);
+            SetPosition(prevPos);
+            render_button(texture);
         }
         else
         {
-            this->render_button(texture);
+            render_button(texture);
+            prevPos = { mPosition.x, mPosition.y };
         }
+    }
+
+    void SetPosition(SDL_Point cords)
+    {
+        mPosition.x = cords.x;
+        mPosition.y = cords.y;
     }
 
     void render_button(Texture* texture)
@@ -199,9 +210,6 @@ public:
         SDL_RenderCopyEx(window_inst->GetRenderer(), texture->getTexture(), clip, &renderQuad, angle, center, flip);
         if (text.size() != 0)
         {
-            Texture fontTexture(window_inst);
-            fontTexture.loadFont("Graphics/Fonts/Bodoni.ttf", 28);
-            fontTexture.loadFromRenderedText(text, { 15, 20, 28, 0xFF });
             fontTexture.renderButton(fontPosition.x, fontPosition.y);
         }
     };

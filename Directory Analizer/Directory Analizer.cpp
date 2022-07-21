@@ -6,9 +6,9 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	Window_Init mainWin("Directory Analizer");
-
-	rerender render(&mainWin);
+	auto mainWin = std::make_shared<Window_Init>("Directory Analizer");
+	
+	rerender render(std::move(mainWin));
 	render.AppLoop();
 
 	return 0;

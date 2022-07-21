@@ -17,6 +17,7 @@
 Texture::~Texture()
 {
     free();
+    font = NULL;
 }
 
 void Texture::free()
