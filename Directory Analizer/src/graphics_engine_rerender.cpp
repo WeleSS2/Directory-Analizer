@@ -20,6 +20,7 @@
 // Main app loop, not divided correctly (primitive)
 void rerender::AppLoop()
 {
+	std::cout << "Entering app loop" << std::endl;
 	// Graphics loading to textures
 	Texture ButtonTexture(window_inst);
 	Texture Background(window_inst);
@@ -51,19 +52,21 @@ void rerender::AppLoop()
 	// Main app loop
 	bool exit = 1;
 	std::string path = "";
+
+	//std::cout << "Pre main loop" << "\n";
 	while (exit)
 	{
-		SDL_Delay(5);
 		SDL_Event e;
 
-		while (SDL_PollEvent(&e))
+		while (SDL_WaitEvent(&e))
 		{
+			SDL_Log("Event");
 			if (e.type == SDL_MOUSEBUTTONDOWN)
 			{
+				SDL_Log("Click");
 				{
 					int x, y;
 					SDL_GetMouseState(&x, &y);
-
 
 					if(checkPosition(x, y, &Folder))
 					{
