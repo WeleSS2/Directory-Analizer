@@ -13,15 +13,13 @@ void algo::mapFolder(T path)
 	{
 		if (entry.is_directory())
 		{
-			std::cout << "New thread called    " << fs::path{ entry } << "\n";
-			threads.push_task([&] {
+			threads.push_task([=] {
 				mapFolder(fs::path{ entry });
 				}
 			);
 		}
 		else
 		{
-			std::cout << "Text file test" << "\n";
 			isTextFile(entry);
 		}
 	}
