@@ -53,17 +53,14 @@ void rerender::AppLoop()
 	bool exit = 1;
 	std::string path = "";
 
-	//std::cout << "Pre main loop" << "\n";
 	while (exit)
 	{
 		SDL_Event e;
 
 		while (SDL_WaitEvent(&e))
 		{
-			SDL_Log("Event");
 			if (e.type == SDL_MOUSEBUTTONDOWN)
 			{
-				SDL_Log("Click");
 				{
 					int x, y;
 					SDL_GetMouseState(&x, &y);
@@ -72,7 +69,7 @@ void rerender::AppLoop()
 					{
 						path = OpenFolder();
 					}
-					/*else if (checkPosition(x, y, &Stats))
+					/*if (checkPosition(x, y, &Stats))
 					{
 						SDL_RenderClear(window_inst->GetRenderer());
 						SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
@@ -84,7 +81,7 @@ void rerender::AppLoop()
 
 						Back.Rerender(&Arrow);
 					}*/
-					else if (checkPosition(x, y, &Analyze))
+					if (checkPosition(x, y, &Analyze))
 					{
 						if (path.size() != 0)
 						{
@@ -92,7 +89,7 @@ void rerender::AppLoop()
 							algo Anal(path);
 						}
 					}
-					/*else if (checkPosition(x, y, &Back))
+					/*if (checkPosition(x, y, &Back))
 					{
 						SDL_RenderClear(window_inst->GetRenderer());
 						SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
@@ -103,9 +100,10 @@ void rerender::AppLoop()
 						Folder.Rerender(&ButtonTexture);
 						Stats.Rerender(&ButtonTexture);
 					}*/
-					else if (checkPosition(x, y, &Exit))
+					if (checkPosition(x, y, &Exit))
 					{
 						exit = 0;
+						break;
 					}
 				}
 

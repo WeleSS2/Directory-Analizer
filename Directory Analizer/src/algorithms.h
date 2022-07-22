@@ -29,7 +29,7 @@ class Thread_Pool
 public:
 	using Task = std::function<void()>;
 
-	explicit Thread_Pool(std::size_t Threads)
+	explicit Thread_Pool(int Threads)
 	{
 		start(Threads);
 	}
@@ -38,7 +38,7 @@ public:
 		stop();
 	}
 
-	/*void queueold(Task task)
+	void push_task(Task task)
 	{
 		{
 			std::unique_lock<std::mutex> lock(mEventMutex);
@@ -46,30 +46,9 @@ public:
 		}
 
 		mEventVar.notify_one();
-	}*/
-
-	template <class T>
-	auto queue(T task)->std::future<decltype(task())>
-	{
-		std::cout << "Queue in" << "\n";
-		auto wrapper = std::make_shared<std::packaged_task<decltype(task()) ()>>(std::move(task));
-		{
-			std::cout << "Queue in 2" << "\n";
-			std::unique_lock<std::mutex> lock(mEventMutex);
-			std::cout << "Preemplace" << "\n";
-			qTasks.emplace([=]
-				{
-					(*wrapper)();
-				});
-			std::cout << "Post emplace" << "\n";
-		}
-
-		mEventVar.notify_one();
-		return wrapper->get_future();
-		std::cout << "Queue out" << "\n";
 	}
 private:
-	std::vector<std::thread> vec_mThreads;
+	std::vector<std::jthread> vec_mThreads;
 	std::queue<Task> qTasks;
 
 
@@ -78,9 +57,8 @@ private:
 	std::mutex mEventMutex;
 	bool mStop = false;
 
-	void start(std::size_t Threads)
+	void start(int Threads)
 	{
-		std::cout << "Start in" << "\n";
 		for (int i = 0; i < Threads; ++i)
 		{
 			vec_mThreads.emplace_back([=]
@@ -92,7 +70,8 @@ private:
 						{
 							std::unique_lock<std::mutex> lock{ mEventMutex };
 
-							mEventVar.wait(lock, [=] {return mStop || qTasks.empty();  });
+							mEventVar.wait(lock, [=] { 
+								return mStop || !qTasks.empty();  });
 
 							if (mStop && qTasks.empty())
 							{
@@ -108,12 +87,10 @@ private:
 				}
 			);
 		}
-		std::cout << "Start out" << "\n";
 	}
 
 	void stop() noexcept
 	{
-		std::cout << "Stop in" << "\n";
 		{
 			std::unique_lock<std::mutex> lock{ mEventMutex };
 			mStop = true;
@@ -123,6 +100,5 @@ private:
 		{
 			thread.join();
 		}
-		std::cout << "Stop out" << "\n";
 	}
 };
