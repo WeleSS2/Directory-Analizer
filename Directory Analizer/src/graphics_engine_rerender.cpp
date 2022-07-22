@@ -92,7 +92,6 @@ void rerender::AppLoop()
 					}*/
 					if (checkPosition(x, y, &Analyze))
 					{
-						threads.push_task([this]() {this->General(); });
 						if (path.size() != 0)
 						{
 							algo Anal(path);
@@ -101,7 +100,7 @@ void rerender::AppLoop()
 								}
 							);
 						}
-						SDL_Log("Click");
+						//SDL_Log("Click");
 					}
 					/*if (checkPosition(x, y, &Back))
 					{

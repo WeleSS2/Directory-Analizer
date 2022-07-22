@@ -68,6 +68,7 @@ private:
 				{
 					while (true)
 					{
+						std::cout << "Thread number " << i << " qTasks size " << qTasks.size() << "   \n";
 						Task task;
 						
 						{
@@ -84,6 +85,7 @@ private:
 
 							task = std::move(qTasks.front());
 							qTasks.pop();
+							std::cout << "Thread number " << i << " task queue is " << qTasks.size() << "   \n";
 						}
 
 						task();

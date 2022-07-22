@@ -9,14 +9,14 @@
 
 int main(int argc, char* argv[])
 {
-	/*auto mainWin = std::make_shared<Window_Init>("Directory Analizer");
+	auto mainWin = std::make_shared<Window_Init>("Directory Analizer");
 	rerender render(std::move(mainWin));
-	render.AppLoop();*/
-	threads.push_task([] {
+	render.AppLoop();
+	/*threads.push_task([] {
 		auto mainWin = std::make_shared<Window_Init>("Directory Analizer");
 		rerender render(std::move(mainWin));
 		render.AppLoop();
 		}
-	);
+	);*/
 	return 0;
 }

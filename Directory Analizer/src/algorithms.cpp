@@ -13,7 +13,7 @@ void algo::mapFolder(T path)
 	{
 		if (entry.is_directory())
 		{
-			std::cout << "New thread called" << "\n";
+			std::cout << "New thread called    " << fs::path{ entry } << "\n";
 			threads.push_task([&] {
 				mapFolder(fs::path{ entry });
 				}
