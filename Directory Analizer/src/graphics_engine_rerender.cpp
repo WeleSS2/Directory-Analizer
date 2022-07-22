@@ -41,6 +41,14 @@ void rerender::AppLoop()
 	button Exit(window_inst, "Exit", { window_inst->GetWidth() - 240, 40, 180, 45 }, "Exit", { window_inst->GetWidth() - 175, 47 });
 	button CurrentFolder(window_inst, "CurrentFolder", { 40, 100, 10, 10 }, "Current Folder: ", { 40, 100 });
 
+
+	button Files(window_inst, "Files", { 40, 150, 10, 10}, "Files amount: ", {40, 150});
+	button NonEmptyLines(window_inst, "NonEmptyLines", { 40, 200, 10, 10 }, "Filled lines amount: ", { 40, 200 });
+	button EmptyLines(window_inst, "EmptyLines", { 40, 250, 10, 10 }, "Empty lines amount: ", { 40, 250 });
+	button Words(window_inst, "Words", { 40, 300, 10, 10 }, "Words amount: ", { 40, 300 });
+	button Letters(window_inst, "Letters", { 40, 350, 10, 10 }, "Letters amount: ", { 40, 350 });
+
+
 	// 1st time menu rendering
 	SDL_RenderClear((*window_inst).GetRenderer());
 	SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
@@ -53,12 +61,16 @@ void rerender::AppLoop()
 	// Main app loop
 	bool exit = 1;
 	std::string path = "";
+	algo Anal;
 
 	while (exit)
 	{
+		SDL_RenderClear(window_inst->GetRenderer());
+
 		SDL_Event e;
 
-		while (SDL_WaitEvent(&e))
+
+		while (SDL_PollEvent(&e))
 		{
 			if (e.type == SDL_MOUSEBUTTONDOWN)
 			{
@@ -70,13 +82,7 @@ void rerender::AppLoop()
 					{
 						path = OpenFolder();
 
-						SDL_RenderClear(window_inst->GetRenderer());
-						SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
-
-						Folder.Rerender(&ButtonTexture);
-						Analyze.Rerender(&ButtonTexture);
 						CurrentFolder.ChangeText("Current Folder: " + path);
-						CurrentFolder.Rerender(&Empty);
 					}
 					/*if (checkPosition(x, y, &Stats))
 					{
@@ -94,7 +100,8 @@ void rerender::AppLoop()
 					{
 						if (path.size() != 0)
 						{
-							algo Anal(path);
+							Anal.setPatch(path);
+							Anal.resetStats();
 							threads.push_task([&] {
 								Anal.mapFolder(path);
 								}
@@ -119,11 +126,29 @@ void rerender::AppLoop()
 						break;
 					}
 				}
-
-				Exit.Rerender(&ButtonTexture);
-				SDL_RenderPresent(window_inst->GetRenderer());
 			}
 		}
+
+
+		SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
+		Folder.Rerender(&ButtonTexture);
+		Analyze.Rerender(&ButtonTexture);
+		if (!path.empty())
+		{
+			CurrentFolder.Rerender(&Empty);
+			Files.ChangeText("Files amount: " + std::to_string(Anal.GetFilesAmount()));
+			Files.Rerender(&Empty);
+			NonEmptyLines.ChangeText("Filled lines amount: " + std::to_string(Anal.GetLinesAmount()));
+			NonEmptyLines.Rerender(&Empty);
+			EmptyLines.ChangeText("Empty lines amount: " + std::to_string(Anal.GetEmptyLinesAmount()));
+			EmptyLines.Rerender(&Empty);
+			Words.ChangeText("Words amount: " + std::to_string(Anal.GetWordsAmount()));
+			Words.Rerender(&Empty);
+			Letters.ChangeText("Letters amount: " + std::to_string(Anal.GetLettersAmount()));
+			Letters.Rerender(&Empty);
+		}
+		Exit.Rerender(&ButtonTexture);
+		SDL_RenderPresent(window_inst->GetRenderer());
 	}
 }
 
@@ -142,7 +167,7 @@ std::string rerender::OpenFolder()
 {
 #ifdef _WIN32
 	IFileOpenDialog* pFileOpen;
-	PWSTR pszFilePath = NULL;
+	PWSTR FilePath = NULL;
 
 	// Create the FileOpenDialog object.
 	HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
@@ -164,10 +189,9 @@ std::string rerender::OpenFolder()
 			hr = pFileOpen->GetResult(&pItem);
 			if (SUCCEEDED(hr))
 			{
-				PWSTR pszFilePath;
-				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &FilePath);
 				
-				return pwstr_to_str(pszFilePath);
+				return pwstr_to_str(FilePath);
 			}
 		}
 		pFileOpen->Release();
@@ -195,14 +219,4 @@ bool rerender::checkPosition(int& x, int& y, button* obj)
 	{
 		return 0;
 	}
-}
-
-void rerender::Stats()
-{
-
-}
-
-void rerender::General()
-{
-	std::cout << "General work" << std::endl;
 }

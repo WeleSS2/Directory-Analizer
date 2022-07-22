@@ -12,19 +12,73 @@ class algo
 {
 private:
 	std::string folderpath = "";
+	unsigned long long files_amount = 0, emptylines = 0, filledlines = 0, words = 0, letters = 0;
+	std::vector <std::string> ext{".pages", ".rtf", ".srt", ".log", ".msg", ".odt", ".lit", ".txt" , ".doc", ".docx"};
 public:
+	algo()
+	{
+	};
 	algo(std::string path)
 		: folderpath(path)
 	{
 	};
 
+	void setPatch(std::string path)
+	{
+		folderpath = path;
+	};
+
 	~algo()
 	{
 	};
+
+	bool checkExtension(std::filesystem::path(entry))
+	{
+		bool ret = false;
+		for (int i = 0; i < ext.size(); ++i)
+		{
+			if (std::filesystem::path(entry).extension() == ext[i])
+			{
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
 	template <class T>
 	void mapFolder(T path);
 	void analizeFile();
 	void isTextFile(std::filesystem::directory_entry dir);
+
+	void resetStats()
+	{
+		files_amount = 0;
+		emptylines = 0;
+		filledlines = 0;
+		words = 0;
+		letters = 0;
+	};
+
+	unsigned long long GetFilesAmount()
+	{
+		return files_amount;
+	};
+	unsigned long long GetLinesAmount()
+	{
+		return filledlines;
+	};
+	unsigned long long GetEmptyLinesAmount()
+	{
+		return emptylines;
+	};
+	unsigned long long GetWordsAmount()
+	{
+		return words;
+	};
+	unsigned long long GetLettersAmount()
+	{
+		return letters;
+	};
 };
 
 class Thread_Pool
@@ -32,7 +86,7 @@ class Thread_Pool
 public:
 	using Task = std::function<void()>;
 
-	explicit Thread_Pool(int Threads)
+	Thread_Pool(int Threads)
 	{
 		start(Threads);
 	}

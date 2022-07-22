@@ -9,14 +9,15 @@
 
 int main(int argc, char* argv[])
 {
+	// Creating window and renderer
 	auto mainWin = std::make_shared<Window_Init>("Directory Analizer");
+	
+	// Moving renderer to main rendering class
 	rerender render(std::move(mainWin));
+	
+	// Starting application
 	render.AppLoop();
-	/*threads.push_task([] {
-		auto mainWin = std::make_shared<Window_Init>("Directory Analizer");
-		rerender render(std::move(mainWin));
-		render.AppLoop();
-		}
-	);*/
+
+
 	return 0;
 }
