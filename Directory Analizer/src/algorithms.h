@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <queue>
 #include <future>
+#include <filesystem>
 
 class algo
 {
@@ -20,8 +21,10 @@ public:
 	~algo()
 	{
 	};
-
-	void mapFolders();
+	template <class T>
+	void mapFolder(T path);
+	void analizeFile();
+	void isTextFile(std::filesystem::directory_entry dir);
 };
 
 class Thread_Pool
@@ -71,7 +74,8 @@ private:
 							std::unique_lock<std::mutex> lock{ mEventMutex };
 
 							mEventVar.wait(lock, [=] { 
-								return mStop || !qTasks.empty();  });
+								return mStop || !qTasks.empty();  
+								});
 
 							if (mStop && qTasks.empty())
 							{
@@ -102,3 +106,5 @@ private:
 		}
 	}
 };
+
+Thread_Pool threads(std::thread::hardware_concurrency());

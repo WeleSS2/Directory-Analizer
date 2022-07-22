@@ -22,6 +22,7 @@ void rerender::AppLoop()
 {
 	std::cout << "Entering app loop" << std::endl;
 	// Graphics loading to textures
+	Texture Empty(window_inst);
 	Texture ButtonTexture(window_inst);
 	Texture Background(window_inst);
 	//Texture Arrow(window_inst);
@@ -38,6 +39,7 @@ void rerender::AppLoop()
 	//button General(window_inst, "General", { 540, 40, 180, 45 }, "General", { 585, 47 });
 	//button Back(window_inst, "Back", { 40, 40, 45, 45 });
 	button Exit(window_inst, "Exit", { window_inst->GetWidth() - 240, 40, 180, 45 }, "Exit", { window_inst->GetWidth() - 175, 47 });
+	button CurrentFolder(window_inst, "CurrentFolder", { 40, 100, 10, 10 }, "Current Folder: ", { 40, 100 });
 
 	// 1st time menu rendering
 	SDL_RenderClear((*window_inst).GetRenderer());
@@ -47,7 +49,6 @@ void rerender::AppLoop()
 	Analyze.Rerender(&ButtonTexture);
 	Exit.Rerender(&ButtonTexture);
 	SDL_RenderPresent((*window_inst).GetRenderer());
-
 
 	// Main app loop
 	bool exit = 1;
@@ -68,6 +69,14 @@ void rerender::AppLoop()
 					if(checkPosition(x, y, &Folder))
 					{
 						path = OpenFolder();
+
+						SDL_RenderClear(window_inst->GetRenderer());
+						SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
+
+						Folder.Rerender(&ButtonTexture);
+						Analyze.Rerender(&ButtonTexture);
+						CurrentFolder.ChangeText("Current Folder: " + path);
+						CurrentFolder.Rerender(&Empty);
 					}
 					/*if (checkPosition(x, y, &Stats))
 					{
@@ -83,11 +92,16 @@ void rerender::AppLoop()
 					}*/
 					if (checkPosition(x, y, &Analyze))
 					{
+						threads.push_task([this]() {this->General(); });
 						if (path.size() != 0)
 						{
-							std::cout << "Size != 0" << "\n";
 							algo Anal(path);
+							threads.push_task([&] {
+								Anal.mapFolder(path);
+								}
+							);
 						}
+						SDL_Log("Click");
 					}
 					/*if (checkPosition(x, y, &Back))
 					{
@@ -187,4 +201,9 @@ bool rerender::checkPosition(int& x, int& y, button* obj)
 void rerender::Stats()
 {
 
+}
+
+void rerender::General()
+{
+	std::cout << "General work" << std::endl;
 }

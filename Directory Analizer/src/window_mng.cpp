@@ -1,3 +1,4 @@
+#pragma once
 #include "window_mng.h"
 
 //Creating rendring window with custom name

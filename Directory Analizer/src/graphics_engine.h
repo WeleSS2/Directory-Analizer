@@ -228,4 +228,10 @@ public:
     {
         return text;
     }
+
+    void ChangeText(std::string input)
+    {
+        text = input;
+        fontTexture.loadFromRenderedText(text, { 109, 181, 201, 0xFF });
+    }
 };
