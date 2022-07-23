@@ -20,7 +20,6 @@
 // Main app loop, not divided correctly (primitive)
 void rerender::AppLoop()
 {
-	std::cout << "Entering app loop" << std::endl;
 	// Graphics loading to textures
 	Texture Empty(window_inst);
 	Texture ButtonTexture(window_inst);
@@ -33,14 +32,15 @@ void rerender::AppLoop()
 	// Building buttons
 	button Folder(window_inst, "Folder", { 40, 40, 180, 45 }, "Select Folder", { 55, 47 });
 	button Analyze(window_inst, "Analyze", { 260, 40, 180, 45 }, "Analyze", { 305, 47 });
+	button Exit(window_inst, "Exit", { window_inst->GetWidth() - 240, 40, 180, 45 }, "Exit", { window_inst->GetWidth() - 175, 47 });
+	button CurrentFolder(window_inst, "CurrentFolder", { 40, 100, 10, 10 }, "Current Folder: ", { 40, 100 });
+
+	// Commented modules
 	//button Stats(window_inst, "Stats", { 480, 40, 180, 45 }, "Statistics", { 520, 47 });
 	//button PerFile(window_inst, "PerFile", { 100, 40, 180, 45 }, "In File", { 145, 47 });
 	//button PerFolder(window_inst, "PerFolder", { 320, 40, 180, 45 }, "In Folder", { 355, 47 });
 	//button General(window_inst, "General", { 540, 40, 180, 45 }, "General", { 585, 47 });
 	//button Back(window_inst, "Back", { 40, 40, 45, 45 });
-	button Exit(window_inst, "Exit", { window_inst->GetWidth() - 240, 40, 180, 45 }, "Exit", { window_inst->GetWidth() - 175, 47 });
-	button CurrentFolder(window_inst, "CurrentFolder", { 40, 100, 10, 10 }, "Current Folder: ", { 40, 100 });
-
 
 	button Files(window_inst, "Files", { 40, 150, 10, 10}, "Files amount: ", {40, 150});
 	button NonEmptyLines(window_inst, "NonEmptyLines", { 40, 200, 10, 10 }, "Filled lines amount: ", { 40, 200 });
@@ -53,23 +53,24 @@ void rerender::AppLoop()
 	SDL_RenderClear((*window_inst).GetRenderer());
 	SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
 	Folder.Rerender(&ButtonTexture);
-	//Stats.Rerender(&ButtonTexture);
 	Analyze.Rerender(&ButtonTexture);
 	Exit.Rerender(&ButtonTexture);
 	SDL_RenderPresent((*window_inst).GetRenderer());
 
-	// Main app loop
+	// Main app loop variables
 	bool exit = 1;
 	std::string path = "";
-	algo Anal;
+	Algo Anal;
 
+
+	// Main app loop
 	while (exit)
 	{
 		SDL_RenderClear(window_inst->GetRenderer());
 
 		SDL_Event e;
 
-
+		// Event loop
 		while (SDL_PollEvent(&e))
 		{
 			if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -84,6 +85,7 @@ void rerender::AppLoop()
 
 						CurrentFolder.ChangeText("Current Folder: " + path);
 					}
+					// Commented modules
 					/*if (checkPosition(x, y, &Stats))
 					{
 						SDL_RenderClear(window_inst->GetRenderer());
@@ -102,13 +104,13 @@ void rerender::AppLoop()
 						{
 							Anal.setPatch(path);
 							Anal.resetStats();
-							threads.push_task([&] {
+							Threads.push_task([&] {
 								Anal.mapFolder(path);
 								}
 							);
 						}
-						//SDL_Log("Click");
 					}
+					// Commented modules
 					/*if (checkPosition(x, y, &Back))
 					{
 						SDL_RenderClear(window_inst->GetRenderer());
@@ -130,21 +132,22 @@ void rerender::AppLoop()
 		}
 
 
+		// Graphics rendering part
 		SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
 		Folder.Rerender(&ButtonTexture);
 		Analyze.Rerender(&ButtonTexture);
 		if (!path.empty())
 		{
 			CurrentFolder.Rerender(&Empty);
-			Files.ChangeText("Files amount: " + std::to_string(Anal.GetFilesAmount()));
+			Files.ChangeText("Files amount: " + std::to_string(Anal.getFilesAmount()));
 			Files.Rerender(&Empty);
-			NonEmptyLines.ChangeText("Filled lines amount: " + std::to_string(Anal.GetLinesAmount()));
+			NonEmptyLines.ChangeText("Filled lines amount: " + std::to_string(Anal.getLinesAmount()));
 			NonEmptyLines.Rerender(&Empty);
-			EmptyLines.ChangeText("Empty lines amount: " + std::to_string(Anal.GetEmptyLinesAmount()));
+			EmptyLines.ChangeText("Empty lines amount: " + std::to_string(Anal.getEmptyLinesAmount()));
 			EmptyLines.Rerender(&Empty);
-			Words.ChangeText("Words amount: " + std::to_string(Anal.GetWordsAmount()));
+			Words.ChangeText("Words amount: " + std::to_string(Anal.getWordsAmount()));
 			Words.Rerender(&Empty);
-			Letters.ChangeText("Letters amount: " + std::to_string(Anal.GetLettersAmount()));
+			Letters.ChangeText("Letters amount: " + std::to_string(Anal.getLettersAmount()));
 			Letters.Rerender(&Empty);
 		}
 		Exit.Rerender(&ButtonTexture);
@@ -154,6 +157,7 @@ void rerender::AppLoop()
 
 std::string rerender::pwstr_to_str(PWSTR win_str)
 {
+	// Changing windows pw string into normal string...
 	wchar_t* tmp = win_str;
 	std::wstring ws(tmp);
 	std::string str;

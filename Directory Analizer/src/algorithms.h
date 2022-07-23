@@ -7,19 +7,28 @@
 #include <queue>
 #include <future>
 #include <filesystem>
+#include <atomic>
 
-class algo
+class Algo
 {
 private:
 	std::string folderpath = "";
-	unsigned long long files_amount = 0, emptylines = 0, filledlines = 0, words = 0, letters = 0;
+	// Amount of parameters in folder and subfolders.
+	std::atomic <unsigned long long> files_amount = 0, emptylines = 0, filledlines = 0, words_amount = 0, letters_amount = 0;
+	// Supported extensions
 	std::vector <std::string> ext{".pages", ".rtf", ".srt", ".log", ".msg", ".odt", ".lit", ".txt" , ".doc", ".docx"};
 public:
-	algo()
+	Algo()
 	{
 	};
-	algo(std::string path)
+
+	// Overloading constructor to create object with path
+	Algo(std::string path)
 		: folderpath(path)
+	{
+	};
+
+	~Algo()
 	{
 	};
 
@@ -28,56 +37,46 @@ public:
 		folderpath = path;
 	};
 
-	~algo()
-	{
-	};
+	// Check did file have suported extension
+	bool checkExtension(std::filesystem::path(entry));
 
-	bool checkExtension(std::filesystem::path(entry))
-	{
-		bool ret = false;
-		for (int i = 0; i < ext.size(); ++i)
-		{
-			if (std::filesystem::path(entry).extension() == ext[i])
-			{
-				ret = true;
-				break;
-			}
-		}
-		return ret;
-	}
+	// Iterate through directory to find directories and files inside
 	template <class T>
 	void mapFolder(T path);
-	void analizeFile();
+
+	// If file is text file count parameters
 	void isTextFile(std::filesystem::directory_entry dir);
 
+	// Reset parameters if new folder is loaded
 	void resetStats()
 	{
 		files_amount = 0;
 		emptylines = 0;
 		filledlines = 0;
-		words = 0;
-		letters = 0;
+		words_amount = 0;
+		letters_amount = 0;
 	};
 
-	unsigned long long GetFilesAmount()
+	// Functions to get parameters
+	unsigned long long getFilesAmount()
 	{
 		return files_amount;
 	};
-	unsigned long long GetLinesAmount()
+	unsigned long long getLinesAmount()
 	{
 		return filledlines;
 	};
-	unsigned long long GetEmptyLinesAmount()
+	unsigned long long getEmptyLinesAmount()
 	{
 		return emptylines;
 	};
-	unsigned long long GetWordsAmount()
+	unsigned long long getWordsAmount()
 	{
-		return words;
+		return words_amount;
 	};
-	unsigned long long GetLettersAmount()
+	unsigned long long getLettersAmount()
 	{
-		return letters;
+		return letters_amount;
 	};
 };
 
@@ -95,13 +94,13 @@ public:
 		stop();
 	}
 
+	// Push task into one of the threads
 	void push_task(Task task)
 	{
 		{
 			std::unique_lock<std::mutex> lock(mEventMutex);
 			qTasks.emplace(std::move(task));
 		}
-
 		mEventVar.notify_one();
 	}
 private:
@@ -113,9 +112,10 @@ private:
 
 	std::mutex mEventMutex;
 	bool mStop = false;
-
+	
 	void start(int Threads)
 	{
+		// Constructor
 		for (int i = 0; i < Threads; ++i)
 		{
 			vec_mThreads.emplace_back([=]
@@ -149,6 +149,7 @@ private:
 
 	void stop() noexcept
 	{
+		// Destructor
 		{
 			std::unique_lock<std::mutex> lock{ mEventMutex };
 			mStop = true;
@@ -161,4 +162,4 @@ private:
 	}
 };
 
-Thread_Pool threads(std::thread::hardware_concurrency());
+Thread_Pool Threads(std::thread::hardware_concurrency());

@@ -9,8 +9,7 @@ project ("Directory Analizer" VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 # Target named just as a CMakeTarget, it's not a public app so i use default name.
-add_executable (CMakeTarget "${PROJECT_SOURCE_DIR}/Directory Analizer/Directory Analizer.cpp")
-
+add_executable (CMakeTarget "${PROJECT_SOURCE_DIR}/Directory Analizer/main.cpp")
 
 # Include sub-projects and directories
 add_subdirectory ("Directory Analizer")

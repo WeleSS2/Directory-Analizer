@@ -46,7 +46,6 @@ bool Texture::loadFromFile(std::string path)
     }
     else
     {
-        //Color key image
         SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 255, 255));
 
         //Create texture from surface pixels
@@ -58,11 +57,9 @@ bool Texture::loadFromFile(std::string path)
         }
         else
         {
-            //Get image dimensions
             mWidth = loadedSurface->w;
             mHeight = loadedSurface->h;
         }
-        //Get rid of old loaded surface
         SDL_FreeSurface(loadedSurface);
     }
     mTexture = newTexture;
@@ -105,14 +102,12 @@ void Texture::renderButton(int x, int y, SDL_Rect* clip, double angle, SDL_Point
     //Set rendering space and render to screen
     SDL_Rect renderQuad = { x, y, mWidth, mHeight };
 
-    //Set clip rendering dimensions
     if (clip != NULL)
     {
         renderQuad.w = clip->w;
         renderQuad.h = clip->h;
     }
 
-    //Render to screen
     SDL_RenderCopyEx((*window_inst).GetRenderer(), mTexture, clip, &renderQuad, angle, center, flip);
 }
 
@@ -134,11 +129,9 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor)
 {
     //Get rid of preexisting texture
     free();
-    //Render text surface
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
     if (textSurface != NULL)
     {
-        //Create texture from surface pixels
         mTexture = SDL_CreateTextureFromSurface(window_inst->GetRenderer(), textSurface);
         if (mTexture == NULL)
         {
@@ -146,11 +139,9 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor)
         }
         else
         {
-            //Get image dimensions
             mWidth = textSurface->w;
             mHeight = textSurface->h;
         }
-        //Get rid of old surface
         SDL_FreeSurface(textSurface);
     }
     else
@@ -158,6 +149,5 @@ bool Texture::loadFromRenderedText(std::string textureText, SDL_Color textColor)
         printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
     }
 
-    //Return success
     return mTexture != NULL;
 }

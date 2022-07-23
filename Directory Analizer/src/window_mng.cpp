@@ -62,7 +62,6 @@ void Window_Init::Take_window_size()
 // Initialization of SDL
 bool Window_Init::Sdl_Init()
 {
-    //Init SDL
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
         system("pause");
