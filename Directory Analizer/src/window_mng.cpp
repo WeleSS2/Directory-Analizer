@@ -67,4 +67,5 @@ bool Window_Init::Sdl_Init()
         system("pause");
         return 1;
     }
+    return 0;
 }

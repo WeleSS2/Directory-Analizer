@@ -21,7 +21,6 @@ private:
     SDL_Renderer* Renderer_ = NULL;
 
 public:
-    // Default
     Window_Init()
     {
     };

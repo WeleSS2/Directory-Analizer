@@ -2,22 +2,28 @@
 //
 #pragma once
 #include "main.h"
-//#include "gtest/gtest.h"
+
+#ifdef GTESTS__ENABLED
+	#include "gtest/gtest.h"
+#endif
+
 
 int main(int argc, char* argv[])
 {
-	//::testing::InitGoogleTest(&argc, argv);
+#ifdef GTESTS__ENABLED
+	::testing::InitGoogleTest(&argc, argv);
+
+	return RUN_ALL_TESTS();
+#endif
 
 	// Creating window and renderer
-	auto mainWin = std::make_shared<Window_Init>("Directory Analizer");
+	auto mainWindow = std::make_shared<Window_Init>("Directory Analizer");
 	
 	// Moving renderer to main rendering class
-	rerender render(std::move(mainWin));
+	rerender render(std::move(mainWindow));
 	
 	// Starting application
 	render.AppLoop();
 
-
-	//return RUN_ALL_TESTS();
 	return 0;
 }

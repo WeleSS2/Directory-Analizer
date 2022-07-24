@@ -1,4 +1,4 @@
-﻿# Linking with SDL2 libs to build graphics engine
+﻿# Linking with SDL2 libs to build graphics
 find_package(SDL2 REQUIRED PATHS Dependencies/SDL)
 find_package(SDL2_image REQUIRED PATHS Dependencies/SDL_image)
 find_package(SDL2_ttf REQUIRED PATHS Dependencies/SDl_TTF)

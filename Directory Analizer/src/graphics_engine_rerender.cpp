@@ -35,7 +35,6 @@ void rerender::AppLoop()
 	button Exit(window_inst, "Exit", { window_inst->GetWidth() - 240, 40, 180, 45 }, "Exit", { window_inst->GetWidth() - 175, 47 });
 	button CurrentFolder(window_inst, "CurrentFolder", { 40, 100, 10, 10 }, "Current Folder: ", { 40, 100 });
 
-	// Commented modules
 	//button Stats(window_inst, "Stats", { 480, 40, 180, 45 }, "Statistics", { 520, 47 });
 	//button PerFile(window_inst, "PerFile", { 100, 40, 180, 45 }, "In File", { 145, 47 });
 	//button PerFolder(window_inst, "PerFolder", { 320, 40, 180, 45 }, "In Folder", { 355, 47 });
@@ -85,19 +84,6 @@ void rerender::AppLoop()
 
 						CurrentFolder.ChangeText("Current Folder: " + path);
 					}
-					// Commented modules
-					/*if (checkPosition(x, y, &Stats))
-					{
-						SDL_RenderClear(window_inst->GetRenderer());
-						SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
-
-
-						Folder.setZero();
-						Stats.setZero();
-						Analyze.setZero();
-
-						Back.Rerender(&Arrow);
-					}*/
 					if (checkPosition(x, y, &Analyze))
 					{
 						if (path.size() != 0)
@@ -110,18 +96,6 @@ void rerender::AppLoop()
 							);
 						}
 					}
-					// Commented modules
-					/*if (checkPosition(x, y, &Back))
-					{
-						SDL_RenderClear(window_inst->GetRenderer());
-						SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
-						
-						Back.setZero();
-
-						Analyze.Rerender(&ButtonTexture);
-						Folder.Rerender(&ButtonTexture);
-						Stats.Rerender(&ButtonTexture);
-					}*/
 					if (checkPosition(x, y, &Exit))
 					{
 						exit = 0;
@@ -136,7 +110,8 @@ void rerender::AppLoop()
 		SDL_RenderCopy(window_inst->GetRenderer(), Background.getTexture(), NULL, NULL);
 		Folder.Rerender(&ButtonTexture);
 		Analyze.Rerender(&ButtonTexture);
-		if (!path.empty())
+
+		if (!path.empty() || (Anal.getFilesAmount() != 0))
 		{
 			CurrentFolder.Rerender(&Empty);
 			Files.ChangeText("Files amount: " + std::to_string(Anal.getFilesAmount()));
@@ -150,6 +125,7 @@ void rerender::AppLoop()
 			Letters.ChangeText("Letters amount: " + std::to_string(Anal.getLettersAmount()));
 			Letters.Rerender(&Empty);
 		}
+
 		Exit.Rerender(&ButtonTexture);
 		SDL_RenderPresent(window_inst->GetRenderer());
 	}

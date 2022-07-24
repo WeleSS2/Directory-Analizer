@@ -40,7 +40,7 @@ void Algo::mapFolder(T path)
 void Algo::isTextFile(std::filesystem::directory_entry dir)
 {
 	// Text files analizer, checking for filled and empty lines in file, counting words (letters strings) and letters.
-	int lines = 0, empty = 0, lett = 0, words = 0;
+	int lines = 0, empty = 0, letters = 0, words = 0;
 	namespace fs = std::filesystem;
 
 	// Load file and start loop
@@ -65,7 +65,7 @@ void Algo::isTextFile(std::filesystem::directory_entry dir)
 					{
 						if ((i >= 65 && i <= 90) || (i >= 97 && i <= 122))
 						{
-							++lett;
+							++letters;
 							++letters_in_row;
 						}
 						else if ((i == 32 || i == 33 || i == 63 || i == 46 || i == 44) && (letters_in_row > 0))
@@ -74,7 +74,7 @@ void Algo::isTextFile(std::filesystem::directory_entry dir)
 							letters_in_row = 0;
 						}
 					}
-					// Checking did there was any letter before end of file. Checking EOF (ASCII 10 or 0x0a) doesn't work for some reasons.
+					// Checking did there was any letter before end of line. Checking EOF (ASCII 10 or 0x0a) doesn't work for some reasons.
 					if (letters_in_row > 0)
 					{
 						++words;
@@ -86,7 +86,7 @@ void Algo::isTextFile(std::filesystem::directory_entry dir)
 	// Adding into total count.
 	emptylines += empty;
 	filledlines += lines;
-	letters_amount += lett;
+	letters_amount += letters;
 	words_amount += words;
 }
 
