@@ -42,7 +42,7 @@ if(GTESTS_ENABLED)
       include_directories("${gtest_SOURCE_DIR}/include")
     endif()
 
-    add_definitions(-GTESTS__ENABLED)
+    add_definitions(-DGTESTS__ENABLED)
 endif()
 
 # Target named just as a CMakeTarget, it's not a public app so i use default name.

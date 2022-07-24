@@ -4,7 +4,7 @@
 #include "main.h"
 
 #ifdef GTESTS__ENABLED
-	#include "gtest/gtest.h"
+	#include "src/GTests.cpp"
 #endif
 
 
@@ -12,9 +12,8 @@ int main(int argc, char* argv[])
 {
 #ifdef GTESTS__ENABLED
 	::testing::InitGoogleTest(&argc, argv);
-
 	return RUN_ALL_TESTS();
-#endif
+#else
 
 	// Creating window and renderer
 	auto mainWindow = std::make_shared<Window_Init>("Directory Analizer");
@@ -26,4 +25,5 @@ int main(int argc, char* argv[])
 	render.AppLoop();
 
 	return 0;
+#endif
 }

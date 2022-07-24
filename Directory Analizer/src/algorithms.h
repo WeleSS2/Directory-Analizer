@@ -30,6 +30,7 @@ public:
 
 	~Algo()
 	{
+		resetStats();
 	};
 
 	void setPatch(std::string path)
@@ -103,10 +104,15 @@ public:
 		}
 		mEventVar.notify_one();
 	}
+
+	int getFinishedStatus()
+	{
+		return allFinished;
+	}
 private:
 	std::vector<std::jthread> vec_mThreads;
 	std::queue<Task> qTasks;
-
+	std::atomic<int> allFinished = 0;
 
 	std::condition_variable mEventVar;
 
@@ -136,11 +142,13 @@ private:
 								break;
 							};
 
+							++allFinished;
 							task = std::move(qTasks.front());
 							qTasks.pop();
 						}
 
 						task();
+						--allFinished;
  					}
 				}
 			);
