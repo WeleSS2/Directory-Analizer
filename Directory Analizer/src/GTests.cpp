@@ -141,8 +141,8 @@ TEST(GTestsOverride, doubleCores)
 	{
 		if (Threads.getFinishedStatus() == 0)
 		{
-			EXPECT_EQ(objGTests.analizeTest(objAlgo, 600, 2880, 0
-			, 8640, 48960), TRUE);
+			EXPECT_EQ(objGTests.analizeTest(objAlgo, maxthreads * (maxthreads + 1), maxthreads * (maxthreads * 5), 0
+			, maxthreads * (maxthreads * 15), maxthreads * (maxthreads * 85)), TRUE);
 			break;
 		}
 	}
